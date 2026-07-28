@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../providers/policy_provider.dart';
+import '../../services/api_service.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/disclaimer_banner.dart';
 import '../../widgets/luxury_card.dart';
@@ -63,12 +64,29 @@ class _ClaimsAssistantScreenState extends State<ClaimsAssistantScreen> {
       _isAiThinking = true;
     });
     _chatController.clear();
-
     _scrollToBottom();
 
-    await Future.delayed(const Duration(milliseconds: 900));
+    String aiResponse = '';
 
-    String aiResponse = _generateIndianAiResponse(text);
+    try {
+      // Call the real AI backend endpoint
+      final result = await ApiService.post('/ai/explain-clause', {'clauseText': text});
+      if (result != null && result['data'] != null) {
+        final data = result['data'];
+        final plainEnglish = data['plainEnglish'] ?? '';
+        final proTip = data['proTip'] ?? '';
+        final financialImpact = data['financialImpact'] ?? '';
+        aiResponse = '🤖 **PolicyAI Response**\n\n';
+        if (plainEnglish.isNotEmpty) aiResponse += '$plainEnglish\n\n';
+        if (financialImpact.isNotEmpty) aiResponse += '💵 **Financial Impact**: $financialImpact\n\n';
+        if (proTip.isNotEmpty) aiResponse += '🛡️ **Pro Tip**: $proTip';
+      }
+    } catch (_) {}
+
+    // Rich local fallback if API call fails or returns empty
+    if (aiResponse.trim().isEmpty) {
+      aiResponse = _generateIndianAiResponse(text);
+    }
 
     if (mounted) {
       setState(() {
@@ -107,30 +125,32 @@ class _ClaimsAssistantScreenState extends State<ClaimsAssistantScreen> {
 - **Parents (< 60 Yrs)**: Additional ₹25,000 deduction.
 - **Senior Citizen Parents (60+ Yrs)**: Increased up to ₹50,000 deduction!
 - **Preventive Health Check-up**: Up to ₹5,000 sub-limit included under 80D limit.
-- **Total Max Savings**: Up to **₹75,000 to ₹1,00,00,0** tax deduction depending on parents' age!''';
+- **Total Max Savings**: Up to **₹75,000 to ₹1,00,000** tax deduction depending on parents' age!''';
     } else if (query.contains('ncb') || query.contains('car') || query.contains('motor') || query.contains('transfer')) {
       return '''🚗 **No Claim Bonus (NCB) Transfer Rules (Digit / Tata AIG)**:
-- **NCB Belongs to You**, not the car! You can transfer up to **50% NCB discount** when selling your old vehicle & buying a new Tata/Mahindra/Maruti car.
+- **NCB Belongs to You**, not the car! Transfer up to **50% NCB discount** when buying a new vehicle.
 - **Document Needed**: NCB Reserving Certificate from your previous insurer.
 - **Validity**: NCB Certificate is valid for 3 years from date of vehicle sale.''';
     } else if (query.contains('document') || query.contains('star health') || query.contains('required')) {
       return '''📋 **Checklist for Star Health Claim Submission**:
-1. Claim Form Part-A (filled by patient) & Part-B (filled by Hospital TPA).
+1. Claim Form Part-A (patient) & Part-B (Hospital TPA).
 2. Original Itemized Hospital Discharge Summary.
 3. Original Diagnostic / Blood Test reports (NS1, CBC, X-Ray, MRI).
 4. Pharmacy bills with detailed doctor prescriptions.
 5. Cancelled Cheque (with Printed Name) for direct NEFT Bank Payout.''';
     } else if (query.contains('irdai') || query.contains('rule') || query.contains('incontestability')) {
       return '''🛡️ **IRDAI 3-Year Incontestability Rule**:
-As per Section 45 of the Indian Insurance Act (amended by IRDAI), no life or health insurance policy can be called into question or rejected by the insurer after **3 years** of continuous coverage on any grounds (including non-disclosure or misstatement), making your policy 100% secure!''';
+As per Section 45 of the Indian Insurance Act, no policy can be questioned or rejected by the insurer after **3 years** of continuous coverage — making your policy 100% secure!''';
     } else {
-      return '''🤖 **PolicyAI Guidance for Indian Policyholders**:
-I have reviewed your query against your registered Indian policies (Star Health, Digit Motor, LIC Tech Term).
+      return '''🤖 **PolicyAI — Your Insurance Expert**:
+I can help you with:
+- 🏥 Cashless claim procedures at Apollo, Fortis, Max hospitals
+- 💰 Section 80D tax savings up to ₹1,00,000/year
+- 🚗 NCB transfer rules & Motor insurance claims
+- 📋 Document checklists for Star Health, HDFC ERGO, LIC
+- 🛡️ IRDAI rules & policyholder rights
 
-- **Claim Validity**: Verified against IRDAI guidelines & Indian Hospital TPA networks.
-- **Support Contact**: You can also reach your insurer's 24x7 toll-free helpline directly inside PolicyPal.
-
-Feel free to select a prompt below or ask another question!''';
+Ask me anything about your policies!''';
     }
   }
 

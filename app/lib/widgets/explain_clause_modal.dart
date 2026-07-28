@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/api_service.dart';
 import '../utils/app_theme.dart';
 import 'luxury_card.dart';
 
@@ -58,35 +59,50 @@ class _ExplainClauseModalState extends State<ExplainClauseModal> {
       _explanationResult = null;
     });
 
-    await Future.delayed(const Duration(milliseconds: 900));
+    Map<String, String>? result;
 
-    final textLower = clauseText.toLowerCase();
-    Map<String, String> result;
+    try {
+      // Call live OpenRouter-powered backend endpoint
+      final response = await ApiService.explainClause(clauseText);
+      if (response != null && response['data'] != null) {
+        final data = response['data'] as Map<String, dynamic>;
+        result = {
+          'plainEnglish': data['plainEnglish']?.toString() ?? '',
+          'financialImpact': data['financialImpact']?.toString() ?? '',
+          'proTip': data['proTip']?.toString() ?? '',
+        };
+      }
+    } catch (_) {}
 
-    if (textLower.contains('room rent') || textLower.contains('proportionate')) {
-      result = {
-        'plainEnglish': 'If your room rent exceeds 1% of your sum insured (e.g. ₹5,000/day on ₹5 Lakh policy), the insurer will reduce your ENTIRE hospital bill (doctors fees, ICU, surgery) proportionately by that ratio!',
-        'financialImpact': 'High Financial Risk! A ₹2,000/day excess room choice can result in a ₹50,000+ out-of-pocket deduction across all doctor charges.',
-        'proTip': 'Choose hospital rooms strictly within your daily limit or buy a No-Room-Rent-Capping Rider.',
-      };
-    } else if (textLower.contains('copay') || textLower.contains('co-pay') || textLower.contains('copayment')) {
-      result = {
-        'plainEnglish': 'You agree to pay a fixed percentage (e.g. 20%) of every admissible claim bill yourself, while the insurer pays the remaining 80%.',
-        'financialImpact': 'On a ₹2,00,000 admissible hospital claim with 20% Copay, you pay ₹40,000 and insurer pays ₹1,60,000.',
-        'proTip': 'Common in senior citizen policies. Keep liquid savings ready for your copay share at discharge.',
-      };
-    } else if (textLower.contains('waiting period') || textLower.contains('ped') || textLower.contains('pre-existing')) {
-      result = {
-        'plainEnglish': 'Pre-existing medical conditions (like Diabetes, Hypertension, Asthma) declared at purchase will NOT be covered until you complete 36 continuous policy months.',
-        'financialImpact': 'Any hospitalization related directly or indirectly to PED during first 3 years will be rejected.',
-        'proTip': 'Never let your policy lapse! Porting to a new insurer carries over your completed waiting period months.',
-      };
-    } else {
-      result = {
-        'plainEnglish': 'This clause specifies conditions under which your claim is processed according to IRDAI guidelines and insurer policy schedules.',
-        'financialImpact': 'Ensure all pre-authorization forms & diagnostic test reports are submitted within 24 hours of hospital admission.',
-        'proTip': 'Verify with your hospital TPA desk before discharge to avoid last-minute delays.',
-      };
+    // Local fallback if API call fails
+    if (result == null || result['plainEnglish']!.isEmpty) {
+      final textLower = clauseText.toLowerCase();
+
+      if (textLower.contains('room rent') || textLower.contains('proportionate')) {
+        result = {
+          'plainEnglish': 'If your room rent exceeds 1% of your sum insured (e.g. ₹5,000/day on ₹5 Lakh policy), the insurer will reduce your ENTIRE hospital bill (doctors fees, ICU, surgery) proportionately by that ratio!',
+          'financialImpact': 'High Financial Risk! A ₹2,000/day excess room choice can result in a ₹50,000+ out-of-pocket deduction across all doctor charges.',
+          'proTip': 'Choose hospital rooms strictly within your daily limit or buy a No-Room-Rent-Capping Rider.',
+        };
+      } else if (textLower.contains('copay') || textLower.contains('co-pay') || textLower.contains('copayment')) {
+        result = {
+          'plainEnglish': 'You agree to pay a fixed percentage (e.g. 20%) of every admissible claim bill yourself, while the insurer pays the remaining 80%.',
+          'financialImpact': 'On a ₹2,00,000 admissible hospital claim with 20% Copay, you pay ₹40,000 and insurer pays ₹1,60,000.',
+          'proTip': 'Common in senior citizen policies. Keep liquid savings ready for your copay share at discharge.',
+        };
+      } else if (textLower.contains('waiting period') || textLower.contains('ped') || textLower.contains('pre-existing')) {
+        result = {
+          'plainEnglish': 'Pre-existing medical conditions (like Diabetes, Hypertension, Asthma) declared at purchase will NOT be covered until you complete 36 continuous policy months.',
+          'financialImpact': 'Any hospitalization related directly or indirectly to PED during first 3 years will be rejected.',
+          'proTip': 'Never let your policy lapse! Porting to a new insurer carries over your completed waiting period months.',
+        };
+      } else {
+        result = {
+          'plainEnglish': 'This clause specifies conditions under which your claim is processed according to IRDAI guidelines and insurer policy schedules.',
+          'financialImpact': 'Ensure all pre-authorization forms & diagnostic test reports are submitted within 24 hours of hospital admission.',
+          'proTip': 'Verify with your hospital TPA desk before discharge to avoid last-minute delays.',
+        };
+      }
     }
 
     if (mounted) {

@@ -90,7 +90,26 @@ class ApiService {
     return await post('/ai/explain-clause', {'clauseText': clauseText});
   }
 
-  static Future<dynamic> scanOCR(String filename) async {
-    return await post('/ai/scan-ocr', {'filename': filename});
+  static Future<dynamic> scanOCR(String text, String filename) async {
+    return await post('/ai/scan-ocr', {'text': text, 'filename': filename});
+  }
+
+  static Future<dynamic> assessClaim({
+    required String policyId,
+    required String description,
+    required String incidentDate,
+  }) async {
+    return await post('/claims', {
+      'policyId': policyId,
+      'description': description,
+      'incidentDate': incidentDate,
+      'photoUrls': [],
+    });
+  }
+
+  static Future<dynamic> chatWithAI(String message) async {
+    return await post('/ai/explain-clause', {
+      'clauseText': message,
+    });
   }
 }

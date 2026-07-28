@@ -58,11 +58,13 @@ const handleExplainClause = async (req, res, next) => {
 
 const handleScanOCR = async (req, res, next) => {
   try {
-    const { rawText, filename } = req.body;
+    // Accept both 'text' (Flutter app) and 'rawText' (legacy/test) field names
+    const rawText = req.body.text || req.body.rawText || '';
+    const filename = req.body.filename || 'policy_document.pdf';
 
     const scannedPolicy = await scanDocumentOCR({
-      text: rawText || '',
-      filename: filename || 'policy_document.pdf',
+      text: rawText,
+      filename,
     });
 
     res.status(200).json({
