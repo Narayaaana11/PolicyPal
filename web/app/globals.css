@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --ink-black: #001219;
+  --dark-teal: #005f73;
+  --dark-cyan: #0a9396;
+  --pearl-aqua: #94d2bd;
+  --vanilla-custard: #e9d8a6;
+  --golden-orange: #ee9b00;
+  --burnt-caramel: #ca6702;
+  --rusty-spice: #bb3e03;
+  --oxidized-iron: #ae2012;
+  --brown-red: #9b2226;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--ink-black);
+  color: #f8fafc;
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Glassmorphism Luxury Container */
+.luxury-glass {
+  background: rgba(0, 34, 46, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(10, 147, 150, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 18, 25, 0.6);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-glass:hover {
+  border-color: var(--golden-orange);
+  transform: translateY(-4px);
+  box-shadow: 0 25px 60px rgba(238, 155, 0, 0.15);
+}
+
+.btn-golden {
+  background: linear-gradient(135deg, var(--golden-orange) 0%, var(--burnt-caramel) 100%);
+  color: var(--ink-black);
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 25px rgba(238, 155, 0, 0.25);
+}
+
+.btn-golden:hover {
+  transform: scale(1.03);
+  box-shadow: 0 15px 35px rgba(238, 155, 0, 0.4);
+}
+
+.badge-pearl {
+  background: rgba(148, 210, 189, 0.12);
+  color: var(--pearl-aqua);
+  border: 1px solid rgba(148, 210, 189, 0.3);
+  padding: 6px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 600;
+}
