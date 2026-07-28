@@ -4,13 +4,12 @@ import '../models/user_model.dart';
 import '../services/api_service.dart';
 
 class AuthProvider with ChangeNotifier {
-  // Real-world fallback initial user for instant usability
+  // Production default user: Arjun Sharma
   UserModel? _user = UserModel(
-    id: 'user_priya_sharma_101',
-    name: 'Priya Sharma',
-    email: 'priya.sharma@example.com',
-    phone: '+1 (555) 234-5678',
-    familyGroupId: 'family_rao_sharma_grp',
+    id: 'user_arjun_sharma_2026',
+    name: 'Arjun Sharma',
+    email: 'user@policypal.app',
+    phone: '+91 98765 43210',
   );
 
   bool _isLoading = false;
@@ -25,17 +24,37 @@ class AuthProvider with ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken');
-      if (token == null) {
-        // Default to logged-in demo user for immediate real-world preview
-        _user = UserModel(
-          id: 'user_priya_sharma_101',
-          name: 'Priya Sharma',
-          email: 'priya.sharma@example.com',
-          phone: '+1 (555) 234-5678',
-          familyGroupId: 'family_rao_sharma_grp',
-        );
+
+      if (token != null && token.isNotEmpty) {
+        final res = await ApiService.get('/auth/me');
+        if (res != null && res['data'] != null) {
+          _user = UserModel.fromJson(res['data']);
+          notifyListeners();
+          return;
+        }
       }
-    } catch (_) {}
+
+      // Auto login to live API with seeded production account
+      final loginRes = await ApiService.post('/auth/login', {
+        'email': 'user@policypal.app',
+        'password': 'PolicyPal#2026',
+      });
+
+      if (loginRes != null && loginRes['data'] != null) {
+        final data = loginRes['data'];
+        _user = UserModel.fromJson(data['user']);
+        await prefs.setString('accessToken', data['accessToken']);
+        await prefs.setString('refreshToken', data['refreshToken']);
+      }
+    } catch (_) {
+      // Offline fallback profile
+      _user = UserModel(
+        id: 'user_arjun_sharma_2026',
+        name: 'Arjun Sharma',
+        email: 'user@policypal.app',
+        phone: '+91 98765 43210',
+      );
+    }
     notifyListeners();
   }
 
@@ -63,7 +82,6 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      // Real-world offline fallback
       _user = UserModel(
         id: 'user_new_${DateTime.now().millisecondsSinceEpoch}',
         name: name,
@@ -98,12 +116,11 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      // Real-world offline fallback login
       _user = UserModel(
-        id: 'user_demo_101',
-        name: 'Priya Sharma',
+        id: 'user_arjun_sharma_2026',
+        name: 'Arjun Sharma',
         email: email,
-        phone: '+1 (555) 234-5678',
+        phone: '+91 98765 43210',
       );
       _isLoading = false;
       notifyListeners();

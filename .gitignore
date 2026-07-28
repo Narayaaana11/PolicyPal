@@ -33,6 +33,8 @@ dist/
 app/build/
 app/.dart_tool/
 app/.flutter-plugins-dependencies
+*.apk
+*.aab
 
 # IDE & OS files
 .DS_Store
