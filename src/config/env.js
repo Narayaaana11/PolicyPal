@@ -10,6 +10,8 @@ const config = {
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || 'default_jwt_refresh_secret_key_change_me',
   jwtAccessExpiration: '15m',
   jwtRefreshExpiration: '7d',
+  openrouterApiKey: process.env.OPENROUTER_API_KEY || '',
+  openrouterModel: process.env.OPENROUTER_MODEL || 'google/gemini-2.5-flash',
 };
 
 module.exports = config;
