@@ -1,5 +1,5 @@
-name: app
-description: "PolicyPal Flutter Mobile Application"
+name: policypal
+description: "PolicyPal — AI-Powered Insurance Portfolio & Claims Assistant"
 publish_to: 'none'
 version: 1.0.0+1
 
