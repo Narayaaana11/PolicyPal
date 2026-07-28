@@ -11,7 +11,7 @@ const config = {
   jwtAccessExpiration: '15m',
   jwtRefreshExpiration: '7d',
   openrouterApiKey: process.env.OPENROUTER_API_KEY || '',
-  openrouterModel: process.env.OPENROUTER_MODEL || 'google/gemini-2.5-flash',
+  openrouterModel: process.env.OPENROUTER_MODEL || 'google/gemini-2.0-flash-exp:free',
 };
 
 module.exports = config;
