@@ -26,18 +26,7 @@ class _DocumentScannerModalState extends State<DocumentScannerModal> {
   bool _isScanning = false;
   bool _scanCompleted = false;
 
-  final Map<String, String> _extractedData = {
-    'provider': 'Digit General Insurance',
-    'type': 'auto',
-    'policyNumber': 'DIGIT-MOT-889911',
-    'premiumAmount': '12500',
-    'premiumCadence': 'yearly',
-    'startDate': '2026-01-01',
-    'endDate': '2027-01-01',
-    'coverageSummary': 'Comprehensive Motor Policy with Zero Depreciation and 24/7 Roadside Assistance.',
-    'exclusions': 'Racing, Drunk driving, Normal wear & tear',
-    'nominee': 'Rahul Sharma',
-  };
+  final Map<String, String> _extractedData = {};
 
   void _startScan() async {
     HapticFeedback.mediumImpact();
@@ -54,18 +43,26 @@ class _DocumentScannerModalState extends State<DocumentScannerModal> {
       );
       if (response != null && response['data'] != null) {
         final data = response['data'] as Map<String, dynamic>;
-        _extractedData['provider'] = data['provider']?.toString() ?? _extractedData['provider']!;
-        _extractedData['type'] = data['type']?.toString() ?? _extractedData['type']!;
-        _extractedData['policyNumber'] = data['policyNumber']?.toString() ?? _extractedData['policyNumber']!;
-        _extractedData['premiumAmount'] = (data['premiumAmount'] ?? _extractedData['premiumAmount'])?.toString() ?? '12500';
-        _extractedData['premiumCadence'] = data['premiumCadence']?.toString() ?? _extractedData['premiumCadence']!;
-        _extractedData['startDate'] = data['startDate']?.toString().substring(0, 10) ?? _extractedData['startDate']!;
-        _extractedData['endDate'] = data['endDate']?.toString().substring(0, 10) ?? _extractedData['endDate']!;
-        _extractedData['coverageSummary'] = data['coverageSummary']?.toString() ?? _extractedData['coverageSummary']!;
+        _extractedData['provider'] = data['provider']?.toString() ?? 'Unknown Provider';
+        _extractedData['type'] = data['type']?.toString() ?? 'health';
+        _extractedData['policyNumber'] = data['policyNumber']?.toString() ?? 'POL-UNKNOWN';
+        _extractedData['premiumAmount'] = data['premiumAmount']?.toString() ?? '0';
+        _extractedData['premiumCadence'] = data['premiumCadence']?.toString() ?? 'yearly';
+        
+        final String rawStartDate = data['startDate']?.toString() ?? DateTime.now().toIso8601String();
+        _extractedData['startDate'] = rawStartDate.length >= 10 ? rawStartDate.substring(0, 10) : rawStartDate;
+        
+        final String rawEndDate = data['endDate']?.toString() ?? DateTime.now().add(const Duration(days: 365)).toIso8601String();
+        _extractedData['endDate'] = rawEndDate.length >= 10 ? rawEndDate.substring(0, 10) : rawEndDate;
+        
+        _extractedData['coverageSummary'] = data['coverageSummary']?.toString() ?? 'No summary available.';
+        
         if (data['exclusions'] is List) {
           _extractedData['exclusions'] = (data['exclusions'] as List).join(', ');
+        } else {
+          _extractedData['exclusions'] = data['exclusions']?.toString() ?? 'None specified';
         }
-        _extractedData['nominee'] = data['nominee']?.toString() ?? _extractedData['nominee']!;
+        _extractedData['nominee'] = data['nominee']?.toString() ?? '';
       }
     } catch (_) {
       // Fallback: keep default extracted data
@@ -215,12 +212,15 @@ class _DocumentScannerModalState extends State<DocumentScannerModal> {
                     ],
                   ),
                   const Divider(color: AppTheme.duskBlue, height: 24),
-                  _buildDataRow('Insurer Provider:', _extractedData['provider']!),
-                  _buildDataRow('Policy Number:', _extractedData['policyNumber']!),
-                  _buildDataRow('Policy Type:', _extractedData['type']!.toUpperCase()),
-                  _buildDataRow('Premium Amount:', '₹${_extractedData['premiumAmount']} (${_extractedData['premiumCadence']})'),
-                  _buildDataRow('Effective Period:', '${_extractedData['startDate']} to ${_extractedData['endDate']}'),
-                  _buildDataRow('Coverage Summary:', _extractedData['coverageSummary']!),
+                  if (_extractedData.isNotEmpty) ...[
+                    _buildDataRow('Insurer Provider:', _extractedData['provider'] ?? ''),
+                    _buildDataRow('Policy Number:', _extractedData['policyNumber'] ?? ''),
+                    _buildDataRow('Policy Type:', (_extractedData['type'] ?? '').toUpperCase()),
+                    _buildDataRow('Premium Amount:', '₹${_extractedData['premiumAmount'] ?? 0} (${_extractedData['premiumCadence'] ?? ''})'),
+                    _buildDataRow('Effective Period:', '${_extractedData['startDate'] ?? ''} to ${_extractedData['endDate'] ?? ''}'),
+                    _buildDataRow('Coverage Summary:', _extractedData['coverageSummary'] ?? ''),
+                  ] else
+                    const Center(child: Text('Failed to extract policy data.', style: TextStyle(color: AppTheme.dangerColor))),
                 ],
               ),
             ),

@@ -69,19 +69,14 @@ class _ClaimsAssistantScreenState extends State<ClaimsAssistantScreen> {
     String aiResponse = '';
 
     try {
-      // Call the real AI backend endpoint
-      final result = await ApiService.post('/ai/explain-clause', {'clauseText': text});
+      // Call the real AI chat endpoint
+      final result = await ApiService.chatWithAI(text);
       if (result != null && result['data'] != null) {
-        final data = result['data'];
-        final plainEnglish = data['plainEnglish'] ?? '';
-        final proTip = data['proTip'] ?? '';
-        final financialImpact = data['financialImpact'] ?? '';
-        aiResponse = '🤖 **PolicyAI Response**\n\n';
-        if (plainEnglish.isNotEmpty) aiResponse += '$plainEnglish\n\n';
-        if (financialImpact.isNotEmpty) aiResponse += '💵 **Financial Impact**: $financialImpact\n\n';
-        if (proTip.isNotEmpty) aiResponse += '🛡️ **Pro Tip**: $proTip';
+        aiResponse = result['data']['response'] ?? '';
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('AI Chat Error: $e');
+    }
 
     // Rich local fallback if API call fails or returns empty
     if (aiResponse.trim().isEmpty) {

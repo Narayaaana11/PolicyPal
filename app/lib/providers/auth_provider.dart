@@ -33,28 +33,10 @@ class AuthProvider with ChangeNotifier {
           return;
         }
       }
-
-      // Auto login to live API with seeded production account
-      final loginRes = await ApiService.post('/auth/login', {
-        'email': 'user@policypal.app',
-        'password': 'PolicyPal#2026',
-      });
-
-      if (loginRes != null && loginRes['data'] != null) {
-        final data = loginRes['data'];
-        _user = UserModel.fromJson(data['user']);
-        await prefs.setString('accessToken', data['accessToken']);
-        await prefs.setString('refreshToken', data['refreshToken']);
-      }
     } catch (_) {
-      // Offline fallback profile
-      _user = UserModel(
-        id: 'user_arjun_sharma_2026',
-        name: 'Arjun Sharma',
-        email: 'user@policypal.app',
-        phone: '+91 98765 43210',
-      );
+      // Offline or API error - require login
     }
+    _user = null;
     notifyListeners();
   }
 
@@ -82,15 +64,11 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _user = UserModel(
-        id: 'user_new_${DateTime.now().millisecondsSinceEpoch}',
-        name: name,
-        email: email,
-        phone: phone,
-      );
+      _error = e.toString().replaceAll('Exception: ', '');
+      _user = null;
       _isLoading = false;
       notifyListeners();
-      return true;
+      return false;
     }
   }
 
@@ -116,15 +94,11 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _user = UserModel(
-        id: 'user_arjun_sharma_2026',
-        name: 'Arjun Sharma',
-        email: email,
-        phone: '+91 98765 43210',
-      );
+      _error = e.toString().replaceAll('Exception: ', '');
+      _user = null;
       _isLoading = false;
       notifyListeners();
-      return true;
+      return false;
     }
   }
 

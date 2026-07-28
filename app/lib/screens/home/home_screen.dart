@@ -115,52 +115,63 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 24),
                   // Indian Specific Section 80D & ABHA Health Card
-                  LuxuryCard(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppTheme.successColor.withOpacity(0.15),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.verified_outlined, color: AppTheme.successColor, size: 28),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
+                  Builder(
+                    builder: (context) {
+                      final healthPremium = policyProvider.policies
+                          .where((p) => p.type.toLowerCase() == 'health')
+                          .fold(0.0, (sum, p) => sum + p.premiumAmount);
+                      final eligibleText = healthPremium > 0 
+                          ? '₹${healthPremium.toStringAsFixed(0)} Eligible • 80D Tax Deduction' 
+                          : 'Add a Health Policy to track 80D savings';
+                          
+                      return LuxuryCard(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: AppTheme.successColor.withOpacity(0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.verified_outlined, color: AppTheme.successColor, size: 28),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
-                                    'Section 80D Tax Saved',
-                                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.alabasterGrey),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Section 80D Tax Saved',
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.alabasterGrey),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.primaryColor.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: const Text('AY 2026-27', style: TextStyle(fontSize: 10, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.primaryColor.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: const Text('AY 2026-27', style: TextStyle(fontSize: 10, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    eligibleText,
+                                    style: const TextStyle(fontSize: 12, color: AppTheme.dustyDenim),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
-                              const Text(
-                                '₹56,500 Deductible • ABHA ID Linked: ABHA-91-8849...',
-                                style: TextStyle(fontSize: 12, color: AppTheme.dustyDenim),
-                              ),
-                            ],
-                          ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios, size: 14, color: AppTheme.dustyDenim),
+                          ],
                         ),
-                        const Icon(Icons.arrow_forward_ios, size: 14, color: AppTheme.dustyDenim),
-                      ],
-                    ),
-                  ).animate().fadeIn(delay: 450.ms).slideX(begin: 0.05),
+                      ).animate().fadeIn(delay: 450.ms).slideX(begin: 0.05);
+                    }
+                  ),
                   
                   const SizedBox(height: 32),
                   Text(
