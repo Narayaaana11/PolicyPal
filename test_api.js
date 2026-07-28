@@ -196,6 +196,21 @@ async function runTests() {
   });
   console.log('Response:', contactRes.status, contactRes.body.message);
 
+  // 15. Get Me Profile
+  console.log('\n[15] GET /api/auth/me');
+  const meRes = await request('GET', '/api/auth/me', null, accessToken);
+  console.log('Response:', meRes.status, `User Name: ${meRes.body.data?.name}`);
+
+  // 16. Update Profile
+  console.log('\n[16] PUT /api/auth/profile');
+  const updateRes = await request(
+    'PUT',
+    '/api/auth/profile',
+    { name: 'Priya Sharma (Updated)', phone: '+91 98765 43210' },
+    accessToken
+  );
+  console.log('Response:', updateRes.status, updateRes.body.message);
+
   console.log('\n=== Full Backend API Suite Tests Completed Successfully ===');
 }
 
