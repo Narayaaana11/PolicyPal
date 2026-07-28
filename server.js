@@ -11,6 +11,7 @@ const claimRoutes = require('./src/routes/claim.routes');
 const comparisonRoutes = require('./src/routes/comparison.routes');
 const notificationRoutes = require('./src/routes/notification.routes');
 const landingRoutes = require('./src/routes/landing.routes');
+const aiRoutes = require('./src/routes/ai.routes');
 const errorHandler = require('./src/middleware/error.middleware');
 
 const app = express();
@@ -39,6 +40,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/claims', claimRoutes);
 app.use('/api/compare', comparisonRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/ai', aiRoutes);
 app.use('/api', landingRoutes); // /api/waitlist & /api/contact
 
 app.get('/health', (req, res) => {

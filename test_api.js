@@ -211,6 +211,26 @@ async function runTests() {
   );
   console.log('Response:', updateRes.status, updateRes.body.message);
 
+  // 17. AI Explain Clause Endpoint
+  console.log('\n[17] POST /api/ai/explain-clause');
+  const explainRes = await request(
+    'POST',
+    '/api/ai/explain-clause',
+    { clauseText: 'Room Rent Capped at 1% of Sum Insured per day with Proportionate Deduction.' },
+    accessToken
+  );
+  console.log('Response:', explainRes.status, 'Summary Length:', explainRes.body.data?.plainEnglish ? 'PRESENT' : 'MISSING');
+
+  // 18. AI OCR Scan Endpoint
+  console.log('\n[18] POST /api/ai/scan-ocr');
+  const ocrRes = await request(
+    'POST',
+    '/api/ai/scan-ocr',
+    { filename: 'digit_policy_schedule.pdf' },
+    accessToken
+  );
+  console.log('Response:', ocrRes.status, 'Scanned Provider:', ocrRes.body.data?.provider);
+
   console.log('\n=== Full Backend API Suite Tests Completed Successfully ===');
 }
 

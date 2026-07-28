@@ -84,4 +84,13 @@ class ApiService {
       throw Exception(message);
     }
   }
+
+  // AI Helper APIs
+  static Future<dynamic> explainClause(String clauseText) async {
+    return await post('/ai/explain-clause', {'clauseText': clauseText});
+  }
+
+  static Future<dynamic> scanOCR(String filename) async {
+    return await post('/ai/scan-ocr', {'filename': filename});
+  }
 }
