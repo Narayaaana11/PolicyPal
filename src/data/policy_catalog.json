@@ -61,5 +61,392 @@
     "coverageSummary": "Medical cover up to $500,000, trip cancellation, trip delay, baggage loss, passport loss, personal liability. Cashless hospitalization globally.",
     "exclusions": ["Pre-existing diseases", "Traveling against medical advice", "Adventure sports (unless explicitly covered)"],
     "icon": "travel"
+  },
+  {
+    "id": "cat_008",
+    "provider": "SBI General",
+    "type": "health",
+    "policyName": "Arogya Supreme",
+    "coverageSummary": "Comprehensive health plan covering in-patient treatment, day care procedures, domiciliary hospitalization. Includes AYUSH treatment and mental healthcare.",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "Cosmetic treatment", "Hazardous sports"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_009",
+    "provider": "Niva Bupa (Max Bupa)",
+    "type": "health",
+    "policyName": "ReAssure 2.0",
+    "coverageSummary": "ReAssure benefit triggered from first claim itself (unlimited reinstatements). Booster+ benefit carrying forward unutilized base sum insured up to 100x. No room rent capping.",
+    "exclusions": ["Pre-existing diseases (36 months waiting)", "Obesity treatment (unless medically necessary)", "Maternity (unless added as rider)"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_010",
+    "provider": "Care Health (Religare)",
+    "type": "health",
+    "policyName": "Care Supreme",
+    "coverageSummary": "Cumulative bonus Super up to 500%. Unlimited automatic recharge of sum insured. No sub-limits on room rent or ICU. Covers advanced technology methods like robotic surgeries.",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "Self-inflicted injury", "Unproven treatments"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_011",
+    "provider": "Aditya Birla",
+    "type": "health",
+    "policyName": "Activ Health Platinum Enhanced",
+    "coverageSummary": "Earn up to 100% of premium back as HealthReturns for staying active. Covers mental illness, modern treatment methods, and dental/OPD under specific conditions.",
+    "exclusions": ["Pre-existing diseases (36 months waiting)", "Breach of law", "Alcohol/drug abuse"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_012",
+    "provider": "Bajaj Allianz",
+    "type": "health",
+    "policyName": "Health Guard",
+    "coverageSummary": "Covers hospitalization expenses, pre/post hospitalization, day care procedures. Includes bariatric surgery cover and maternity expenses (in Gold plan).",
+    "exclusions": ["Pre-existing diseases (36 months waiting)", "Cosmetic surgery", "War/Nuclear perils"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_013",
+    "provider": "National Insurance",
+    "type": "health",
+    "policyName": "Mediclaim Policy",
+    "coverageSummary": "Standard PSU health insurance covering room rent (1% of SI), ICU (2% of SI), surgeon/doctor fees, and diagnostics. Reliable claim settlement across India.",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "Maternity", "Dental treatments"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_014",
+    "provider": "New India Assurance",
+    "type": "health",
+    "policyName": "Mediclaim Policy",
+    "coverageSummary": "Covers inpatient hospitalization, 140+ day care surgeries, Ayurvedic/Homeopathic treatment (up to 25% of SI). Family floater options available.",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "HIV/AIDS (unless specific conditions met)", "Spectacles/Contact lenses"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_015",
+    "provider": "Oriental Insurance",
+    "type": "health",
+    "policyName": "Happy Family Floater",
+    "coverageSummary": "Covers entire family under single sum insured. Includes hospital room rent, ICU, doctor fees, diagnostics, and life hardship survival benefit (in Gold/Diamond).",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "External congenital diseases", "Vitamins/Tonics"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_016",
+    "provider": "Star Health",
+    "type": "health",
+    "policyName": "Family Health Optima",
+    "coverageSummary": "Single policy covering entire family. Provides auto recharge of sum insured. Covers assisted reproduction treatment, newborn baby cover from day 1.",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "Weight control treatments", "Alternative treatments outside recognized institutes"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_017",
+    "provider": "Acko",
+    "type": "auto",
+    "policyName": "Comprehensive Car Insurance",
+    "coverageSummary": "Digital-first insurance with no paperwork. Covers accidents, fire, theft, third-party liability. Cashless claims and free doorstep pickup/drop for repairs.",
+    "exclusions": ["Driving without valid license", "Drunk driving", "Consequential damage"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_018",
+    "provider": "ICICI Lombard",
+    "type": "auto",
+    "policyName": "Motor Insurance",
+    "coverageSummary": "Covers damage to vehicle and third-party liabilities. Optional add-ons: Zero Dep, Engine Protect, Return to Invoice, Consumables cover.",
+    "exclusions": ["Normal wear and tear", "Mechanical/electrical breakdown", "Damage outside India"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_019",
+    "provider": "Bajaj Allianz",
+    "type": "auto",
+    "policyName": "Private Car Package Policy",
+    "coverageSummary": "Comprehensive protection against accidents, theft, natural calamities. Motor OTP feature allows up to 50% refund on premium for less usage.",
+    "exclusions": ["Driving without valid license", "Intoxication", "Commercial use of private vehicle"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_020",
+    "provider": "HDFC ERGO",
+    "type": "auto",
+    "policyName": "Comprehensive Car Insurance",
+    "coverageSummary": "Protection from natural disasters, accidents, fire, and theft. Overnight vehicle repair service in select cities. Network of 8000+ cashless garages.",
+    "exclusions": ["Depreciation (unless Zero Dep add-on purchased)", "Electrical/Mechanical breakdown", "Driving under influence"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_021",
+    "provider": "SBI General",
+    "type": "auto",
+    "policyName": "Private Car Insurance",
+    "coverageSummary": "Covers own damage and third party legal liability. Personal accident cover of 15 Lakhs for owner-driver. Optional passenger cover.",
+    "exclusions": ["Driving without valid license", "Drunk driving", "Wear and tear"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_022",
+    "provider": "Reliance General",
+    "type": "auto",
+    "policyName": "Car Insurance Policy",
+    "coverageSummary": "Cashless facility at 8200+ garages. Free roadside assistance. Covers accidents, theft, fire, riots, strikes, and third-party property/life damage.",
+    "exclusions": ["Consequential loss", "Driving without valid driving license", "Contractual liability"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_023",
+    "provider": "Digit Insurance",
+    "type": "auto",
+    "policyName": "Two Wheeler Insurance",
+    "coverageSummary": "Comprehensive cover for bikes/scooters. Smartphone-enabled claim inspection. Covers accidents, theft, fire, natural disasters, and third-party liability.",
+    "exclusions": ["Driving without valid license", "Drunk driving", "Riding without helmet (in some claims)"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_024",
+    "provider": "LIC",
+    "type": "life",
+    "policyName": "Jeevan Umang",
+    "coverageSummary": "Whole life plan offering income and protection. 8% of Sum Assured paid annually post premium paying term until age 100. Lump sum on maturity or death.",
+    "exclusions": ["Suicide within 12 months (80% premium return)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_025",
+    "provider": "LIC",
+    "type": "life",
+    "policyName": "Jeevan Tarun",
+    "coverageSummary": "Child plan meeting educational and other needs. Flexible options to receive survival benefits from age 20 to 24. Maturity benefit at age 25.",
+    "exclusions": ["Suicide within 1 year"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_026",
+    "provider": "HDFC Life",
+    "type": "life",
+    "policyName": "Click 2 Protect Super",
+    "coverageSummary": "Comprehensive term plan. Options for increasing sum assured, return of premium, and terminal illness cover. Waiver of premium on critical illness.",
+    "exclusions": ["Suicide within 12 months from inception (refund of premium)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_027",
+    "provider": "ICICI Prudential",
+    "type": "life",
+    "policyName": "iProtect Smart",
+    "coverageSummary": "Term insurance covering death, terminal illness, and disability. Optional 34 critical illnesses cover. Flexible payout options (lump sum or monthly income).",
+    "exclusions": ["Suicide within 1 year (only premium refund)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_028",
+    "provider": "SBI Life",
+    "type": "life",
+    "policyName": "eShield Next",
+    "coverageSummary": "Level cover, increasing cover, or future proofing benefit options. Covers terminal illness. Optional accidental death and total permanent disability riders.",
+    "exclusions": ["Suicide within 1 year from risk commencement"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_029",
+    "provider": "Tata AIA",
+    "type": "life",
+    "policyName": "Maha Raksha Supreme",
+    "coverageSummary": "Pure term plan with inbuilt Payout Accelerator Benefit for Terminal Illness. Choice of riders. Special premium rates for non-smokers.",
+    "exclusions": ["Suicide within 12 months of inception or revival"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_030",
+    "provider": "Bajaj Allianz Life",
+    "type": "life",
+    "policyName": "Smart Protect Goal",
+    "coverageSummary": "Term plan offering life cover, child education extra cover, and whole life cover up to age 99. Option to get premiums back on maturity.",
+    "exclusions": ["Suicide clause applies (premium refund)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_031",
+    "provider": "Kotak Life",
+    "type": "life",
+    "policyName": "e-Term Plan",
+    "coverageSummary": "Comprehensive protection plan with options for step-up cover. Includes terminal illness benefit. Low premiums for female lives and non-smokers.",
+    "exclusions": ["Suicide within 1 year"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_032",
+    "provider": "Reliance Nippon Life",
+    "type": "life",
+    "policyName": "Protection Plus",
+    "coverageSummary": "Term plan with life cover. Option to add accidental death benefit rider and critical illness rider. Flexible premium payment terms.",
+    "exclusions": ["Suicide within 12 months"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_033",
+    "provider": "Aditya Birla Sun Life",
+    "type": "life",
+    "policyName": "DigiShield Plan",
+    "coverageSummary": "Term insurance with 10 different plan options. Covers till age 100. Includes survival income options, joint life protection, and critical illness riders.",
+    "exclusions": ["Suicide within 1 year"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_034",
+    "provider": "Care Health",
+    "type": "travel",
+    "policyName": "Explore - International Travel",
+    "coverageSummary": "Covers medical emergencies abroad, trip cancellation, delay, loss of passport, and checked-in baggage loss. Region-specific plans available.",
+    "exclusions": ["Pre-existing diseases (unless life-threatening emergency)", "Adventure sports without specific add-on", "Self-inflicted injuries"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_035",
+    "provider": "Tata AIG",
+    "type": "travel",
+    "policyName": "Travel Guard",
+    "coverageSummary": "Comprehensive overseas travel insurance. Covers medical expenses, hijack, personal liability, delayed baggage, and missed connections.",
+    "exclusions": ["Traveling against medical advice", "Pre-existing medical conditions", "War/nuclear perils"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_036",
+    "provider": "HDFC ERGO",
+    "type": "travel",
+    "policyName": "Single Trip Travel Insurance",
+    "coverageSummary": "Emergency medical expenses, dental treatment, personal accident cover, financial emergency cash, trip cancellation, and flight delay.",
+    "exclusions": ["Pre-existing diseases", "Participation in professional sports", "Manual labor work abroad"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_037",
+    "provider": "Bajaj Allianz",
+    "type": "travel",
+    "policyName": "Travel Prime",
+    "coverageSummary": "Global assistance network. Covers medical expenses, hospital cash, baggage delay/loss, trip cancellation, and personal liability.",
+    "exclusions": ["Pre-existing conditions", "Suicide/self-inflicted injury", "Unlawful acts"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_038",
+    "provider": "Reliance General",
+    "type": "travel",
+    "policyName": "Reliance Travel Care",
+    "coverageSummary": "Cashless hospitalization worldwide. Covers medical expenses, trip delay/cancellation, loss of passport, and missed flights. Auto extension if flight is delayed.",
+    "exclusions": ["Pre-existing illness", "Pregnancy/childbirth complications", "Cosmetic surgery"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_039",
+    "provider": "Digit Insurance",
+    "type": "travel",
+    "policyName": "International Travel Insurance",
+    "coverageSummary": "Zero deductibles on most covers. Covers flight delays (flat payout), missed connections, lost baggage, medical emergencies, and adventure sports (optional).",
+    "exclusions": ["Pre-existing diseases", "Traveling for medical treatment", "Breach of law"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_040",
+    "provider": "SBI General",
+    "type": "travel",
+    "policyName": "Travel Insurance (Business & Holiday)",
+    "coverageSummary": "Provides worldwide coverage for medical expenses, repatriation, personal liability, loss of passport, and delayed baggage.",
+    "exclusions": ["Pre-existing conditions", "Mental/nervous disorders", "Venereal diseases"],
+    "icon": "travel"
+  },
+  {
+    "id": "cat_041",
+    "provider": "LIC",
+    "type": "life",
+    "policyName": "Bima Jyoti",
+    "coverageSummary": "Non-linked, non-participating, individual, savings life insurance plan. Guaranteed additions of Rs. 50 per thousand Basic Sum Assured at the end of each year.",
+    "exclusions": ["Suicide within 12 months from commencement of risk (only 80% premiums returned)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_042",
+    "provider": "Max Bupa",
+    "type": "health",
+    "policyName": "Health Companion",
+    "coverageSummary": "Individual and family floater options. No sub-limits on hospital room rent. Covers alternative treatments (AYUSH) and domiciliary hospitalization.",
+    "exclusions": ["Pre-existing diseases (48 months waiting)", "Non-allopathic treatments (unless AYUSH covered)", "Cosmetic surgery"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_043",
+    "provider": "Chola MS",
+    "type": "auto",
+    "policyName": "Motor Insurance",
+    "coverageSummary": "Comprehensive cover. Cashless network of 8500+ garages. Features Chola Protect add-ons like depreciation waiver, return to invoice, and consumable cover.",
+    "exclusions": ["Wear and tear", "Driving under influence", "Driving without license"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_044",
+    "provider": "Oriental Insurance",
+    "type": "auto",
+    "policyName": "Private Car Package Policy",
+    "coverageSummary": "Covers liability to third parties, personal accident cover for owner-driver, and loss/damage to the vehicle due to accidents, fire, or theft.",
+    "exclusions": ["Consequential loss", "Depreciation", "Electrical/mechanical breakdown"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_045",
+    "provider": "New India Assurance",
+    "type": "auto",
+    "policyName": "Motor Policy",
+    "coverageSummary": "One of India's largest PSU insurers. Comprehensive cover for accidents, theft, fire, and third-party liabilities. Optional covers for accessories.",
+    "exclusions": ["Driving under intoxication", "Driving without valid license", "Wear and tear"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_046",
+    "provider": "Navi",
+    "type": "health",
+    "policyName": "Navi Health Insurance",
+    "coverageSummary": "Paperless and quick process. 100% hospital bills paid (no copay, no room rent limits). Cashless claims via app in 10,000+ network hospitals.",
+    "exclusions": ["Pre-existing conditions (specific waiting periods)", "Self-inflicted injuries", "Cosmetic surgeries"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_047",
+    "provider": "Future Generali",
+    "type": "health",
+    "policyName": "Health Total",
+    "coverageSummary": "Comprehensive health plan offering sum insured up to 1 Crore. Covers maternity, mental illness, day care treatments, and restoration benefit.",
+    "exclusions": ["Pre-existing diseases (waiting period applies)", "Substance abuse", "War/nuclear acts"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_048",
+    "provider": "PNB MetLife",
+    "type": "life",
+    "policyName": "Mera Term Plan",
+    "coverageSummary": "Customizable term plan. Includes coverage for spouse, whole life cover till age 99, return of premium option, and joint life protection.",
+    "exclusions": ["Suicide within 12 months"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_049",
+    "provider": "Shriram General",
+    "type": "auto",
+    "policyName": "Motor Insurance",
+    "coverageSummary": "Protects against accidental damage, fire, and theft. Third-party liability cover. Easy renewal and fast claim settlement process.",
+    "exclusions": ["Driving without valid license", "Intoxication", "Consequential damage"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_050",
+    "provider": "Liberty General",
+    "type": "auto",
+    "policyName": "Private Car Insurance",
+    "coverageSummary": "Comprehensive insurance with optional covers like depreciation cover, passenger assist, gap value cover, and roadside assistance.",
+    "exclusions": ["Mechanical/electrical breakdowns", "Damage outside geographical area", "Wear and tear"],
+    "icon": "auto"
   }
 ]
