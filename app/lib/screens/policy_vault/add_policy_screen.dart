@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../providers/policy_provider.dart';
+import '../../services/api_service.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/luxury_card.dart';
 
@@ -97,7 +98,79 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
                     'Enter policy details below to add to your vault.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ).animate().fadeIn(delay: 200.ms),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16),
+                  Autocomplete<Map<String, dynamic>>(
+                    optionsBuilder: (TextEditingValue textEditingValue) async {
+                      if (textEditingValue.text.isEmpty) {
+                        return const Iterable<Map<String, dynamic>>.empty();
+                      }
+                      final results = await ApiService.fetchPolicyCatalog(textEditingValue.text);
+                      return results.map((e) => e as Map<String, dynamic>);
+                    },
+                    displayStringForOption: (Map<String, dynamic> option) => '${option['provider']} - ${option['policyName']}',
+                    onSelected: (Map<String, dynamic> selection) {
+                      setState(() {
+                        _providerController.text = selection['provider'] ?? '';
+                        _type = selection['type'] ?? 'other';
+                        _coverageSummaryController.text = selection['coverageSummary'] ?? '';
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Auto-filled details for ${selection['policyName']}')),
+                      );
+                    },
+                    fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+                      return TextField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        style: const TextStyle(color: AppTheme.alabasterGrey),
+                        decoration: InputDecoration(
+                          labelText: '🔍 Search Policy Catalog (Auto-fill)',
+                          labelStyle: const TextStyle(color: AppTheme.goldenOrange),
+                          filled: true,
+                          fillColor: AppTheme.goldenOrange.withOpacity(0.1),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: AppTheme.goldenOrange),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: AppTheme.goldenOrange.withOpacity(0.5)),
+                          ),
+                        ),
+                      );
+                    },
+                    optionsViewBuilder: (context, onSelected, options) {
+                      return Align(
+                        alignment: Alignment.topLeft,
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Container(
+                            width: MediaQuery.of(context).size.width - 40,
+                            margin: const EdgeInsets.only(top: 8),
+                            decoration: BoxDecoration(
+                              color: AppTheme.prussianBlue,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: AppTheme.goldenOrange.withOpacity(0.5)),
+                            ),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              itemCount: options.length,
+                              itemBuilder: (context, index) {
+                                final option = options.elementAt(index);
+                                return ListTile(
+                                  title: Text('${option['provider']} - ${option['policyName']}', style: const TextStyle(color: AppTheme.alabasterGrey, fontSize: 14)),
+                                  subtitle: Text(option['type'].toString().toUpperCase(), style: const TextStyle(color: AppTheme.dustyDenim, fontSize: 12)),
+                                  onTap: () => onSelected(option),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ).animate().fadeIn(delay: 250.ms).slideX(begin: 0.1),
+                  const SizedBox(height: 24),
 
                   LuxuryCard(
                     padding: const EdgeInsets.all(24),

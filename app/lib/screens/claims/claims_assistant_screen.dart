@@ -333,6 +333,7 @@ Ask me anything about your policies!''';
               ),
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 100)),
         ],
       ),
     );

@@ -139,5 +139,15 @@ class ApiService {
   static Future<dynamic> getUpcomingPayments() async {
     return await get('/payments/upcoming');
   }
+
+  // ── Catalog ──────────────────────────────────────────────
+  static Future<List<dynamic>> fetchPolicyCatalog([String search = '']) async {
+    final query = search.isNotEmpty ? '?search=${Uri.encodeComponent(search)}' : '';
+    final response = await get('/policies/catalog$query');
+    if (response != null && response['data'] != null) {
+      return response['data'] as List<dynamic>;
+    }
+    return [];
+  }
 }
 

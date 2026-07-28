@@ -1,0 +1,65 @@
+[
+  {
+    "id": "cat_001",
+    "provider": "Star Health",
+    "type": "health",
+    "policyName": "Comprehensive Insurance Policy",
+    "coverageSummary": "Covers room rent, ICU, nursing, doctor fees, pre (60 days) and post (90 days) hospitalization, day-care procedures, and domiciliary hospitalization. No capping on room rent. Air ambulance up to 2.5 Lakhs.",
+    "exclusions": ["Pre-existing diseases for first 36 months", "Cosmetic surgery", "Self-inflicted injuries"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_002",
+    "provider": "HDFC ERGO",
+    "type": "health",
+    "policyName": "Optima Restore Health Insurance",
+    "coverageSummary": "100% Restore Benefit if base sum insured is exhausted. Multiplier benefit (50% increase in sum insured for claim-free year, up to 100%). Pre (60 days) and post (180 days) hospitalization. No room rent capping.",
+    "exclusions": ["Pre-existing diseases for first 36 months", "Maternity expenses", "Dental treatment (unless accidental)"],
+    "icon": "health"
+  },
+  {
+    "id": "cat_003",
+    "provider": "Digit Insurance",
+    "type": "auto",
+    "policyName": "Comprehensive Car Insurance",
+    "coverageSummary": "Own damage cover, Third-party liability. Cashless repairs at network garages. Zero Depreciation add-on available. 24x7 Roadside Assistance.",
+    "exclusions": ["Driving without valid license", "Driving under influence of alcohol/drugs", "Consequential damages", "Normal wear and tear"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_004",
+    "provider": "Tata AIG",
+    "type": "auto",
+    "policyName": "Auto Secure Private Car Package Policy",
+    "coverageSummary": "Accidental damage, fire, theft, natural disasters, third-party liability. Personal accident cover for owner-driver up to 15 Lakhs.",
+    "exclusions": ["Mechanical or electrical breakdown", "Damage outside geographical area", "Driving without license"],
+    "icon": "auto"
+  },
+  {
+    "id": "cat_005",
+    "provider": "LIC",
+    "type": "life",
+    "policyName": "Jeevan Anand (Endowment)",
+    "coverageSummary": "Combination of whole life plan and endowment plan. Survival benefit at maturity. Death benefit covers Sum Assured + Bonuses. Accidental death and disability rider included.",
+    "exclusions": ["Suicide within 12 months from date of commencement/revival (only 80% premiums returned)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_006",
+    "provider": "Max Life",
+    "type": "life",
+    "policyName": "Smart Secure Plus Term Plan",
+    "coverageSummary": "Pure term insurance with high sum assured at low premiums. Terminal illness cover included. Option to add Critical Illness and Accidental Death riders.",
+    "exclusions": ["Suicide within 1 year (premium refund only)"],
+    "icon": "life"
+  },
+  {
+    "id": "cat_007",
+    "provider": "ICICI Lombard",
+    "type": "travel",
+    "policyName": "Single Trip International Travel Insurance",
+    "coverageSummary": "Medical cover up to $500,000, trip cancellation, trip delay, baggage loss, passport loss, personal liability. Cashless hospitalization globally.",
+    "exclusions": ["Pre-existing diseases", "Traveling against medical advice", "Adventure sports (unless explicitly covered)"],
+    "icon": "travel"
+  }
+]

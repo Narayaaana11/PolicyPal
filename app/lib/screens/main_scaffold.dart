@@ -195,24 +195,27 @@ class MainScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
       extendBody: true,
       body: Stack(
         children: [
           navigationShell,
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: GlassNavBar(
-              selectedIndex: navigationShell.currentIndex,
-              onItemSelected: _goBranch,
+          if (!isKeyboardOpen)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: GlassNavBar(
+                selectedIndex: navigationShell.currentIndex,
+                onItemSelected: _goBranch,
+              ),
             ),
-          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Padding(
+      floatingActionButton: isKeyboardOpen ? null : Padding(
         padding: const EdgeInsets.only(bottom: 90, right: 12),
         child: FloatingActionButton.extended(
           backgroundColor: AppTheme.primaryColor,

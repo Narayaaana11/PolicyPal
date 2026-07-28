@@ -12,6 +12,7 @@ const comparisonRoutes = require('./src/routes/comparison.routes');
 const notificationRoutes = require('./src/routes/notification.routes');
 const landingRoutes = require('./src/routes/landing.routes');
 const aiRoutes = require('./src/routes/ai.routes');
+const catalogRoutes = require('./src/routes/catalog.routes');
 const errorHandler = require('./src/middleware/error.middleware');
 
 const app = express();
@@ -35,6 +36,7 @@ const authLimiter = rateLimit({
 });
 
 app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/policies', catalogRoutes); // Put catalog routes before policyRoutes so /api/policies/catalog is matched before /api/policies/:id
 app.use('/api/policies', policyRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/claims', claimRoutes);
