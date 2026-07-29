@@ -7,9 +7,11 @@ const {
   updatePolicy,
   deletePolicy,
   checkPolicyOverlap,
+  createPolicyFromPDF,
 } = require('../controllers/policy.controller');
 const { protect } = require('../middleware/auth.middleware');
 const { validate } = require('../middleware/validate.middleware');
+const { uploadPDF } = require('../middleware/upload.middleware');
 
 const router = express.Router();
 
@@ -45,5 +47,8 @@ router
   .delete(deletePolicy);
 
 router.get('/:id/overlap-check', checkPolicyOverlap);
+
+// PDF Upload — AI parses the document and creates a policy
+router.post('/upload-pdf', uploadPDF.single('policyDocument'), createPolicyFromPDF);
 
 module.exports = router;

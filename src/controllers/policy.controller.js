@@ -1,4 +1,5 @@
 const Policy = require('../models/Policy');
+const { processPolicyPDF } = require('../services/pdf.service');
 
 const createPolicy = async (req, res, next) => {
   try {
@@ -43,7 +44,7 @@ const createPolicy = async (req, res, next) => {
 
 const getPolicies = async (req, res, next) => {
   try {
-    const { type, status } = req.query;
+    const { type, status, provider } = req.query;
     const filter = { userId: req.user._id };
 
     if (type) {
@@ -51,6 +52,9 @@ const getPolicies = async (req, res, next) => {
     }
     if (status) {
       filter.status = status;
+    }
+    if (provider) {
+      filter.provider = { $regex: provider, $options: 'i' };
     }
 
     const policies = await Policy.find(filter).sort({ createdAt: -1 });
@@ -203,6 +207,64 @@ const checkPolicyOverlap = async (req, res, next) => {
   }
 };
 
+const createPolicyFromPDF = async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No PDF file uploaded. Please attach a policy PDF document.',
+      });
+    }
+
+    // Step 1: Extract text from PDF and get AI-parsed policy data
+    const { extractedText, pageCount, pdfInfo, aiParsedPolicy } = await processPolicyPDF(
+      req.file.buffer,
+      req.file.originalname
+    );
+
+    // Step 2: Create the policy using AI-extracted fields
+    // User can override any field via request body
+    const policyData = {
+      userId: req.user._id,
+      type: req.body.type || aiParsedPolicy.type || 'other',
+      provider: req.body.provider || aiParsedPolicy.provider || 'Unknown Provider',
+      policyNumber: req.body.policyNumber || aiParsedPolicy.policyNumber || `PDF-${Date.now().toString().slice(-8)}`,
+      premiumAmount: req.body.premiumAmount || aiParsedPolicy.premiumAmount || 0,
+      premiumCadence: req.body.premiumCadence || aiParsedPolicy.premiumCadence || 'yearly',
+      startDate: req.body.startDate || aiParsedPolicy.startDate || new Date().toISOString(),
+      endDate: req.body.endDate || aiParsedPolicy.endDate || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      coverageSummary: req.body.coverageSummary || aiParsedPolicy.coverageSummary || '',
+      exclusions: req.body.exclusions || aiParsedPolicy.exclusions || [],
+      nominee: req.body.nominee || aiParsedPolicy.nominee || '',
+      extractedText: extractedText.substring(0, 50000), // Store first 50k chars of extracted text
+      documentUrl: `uploaded://${req.file.originalname}`,
+      status: 'active',
+    };
+
+    const policy = await Policy.create(policyData);
+
+    res.status(201).json({
+      success: true,
+      message: 'Policy created from PDF successfully! AI has analyzed your document.',
+      data: {
+        policy,
+        aiAnalysis: {
+          parsedFields: aiParsedPolicy,
+          pdfInfo: {
+            filename: req.file.originalname,
+            pageCount,
+            fileSize: `${(req.file.size / 1024).toFixed(1)} KB`,
+            ...pdfInfo,
+          },
+          accuracyScore: aiParsedPolicy.accuracyScore || 85,
+        },
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createPolicy,
   getPolicies,
@@ -210,4 +272,5 @@ module.exports = {
   updatePolicy,
   deletePolicy,
   checkPolicyOverlap,
+  createPolicyFromPDF,
 };

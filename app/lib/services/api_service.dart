@@ -1,4 +1,5 @@
-import 'dart:convert';
+﻿import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/constants.dart';
@@ -130,14 +131,67 @@ class ApiService {
     });
   }
 
+  // ── PDF Upload — AI Policy Understanding ─────────────────
+  
+  /// Upload a policy PDF file for AI to parse and understand
+  /// Returns the created policy along with AI analysis data
+  static Future<dynamic> uploadPolicyPDF(File pdfFile) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('accessToken');
+
+    final uri = Uri.parse('$baseUrl/policies/upload-pdf');
+    final request = http.MultipartRequest('POST', uri);
+
+    if (token != null && token.isNotEmpty) {
+      request.headers['Authorization'] = 'Bearer $token';
+    }
+
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'policyDocument',
+        pdfFile.path,
+        filename: pdfFile.path.split('/').last,
+      ),
+    );
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    return _processResponse(response);
+  }
+
   // ── Notifications ────────────────────────────────────────
   static Future<dynamic> getNotifications() async {
     return await get('/notifications');
   }
 
+  static Future<dynamic> markNotificationRead(String notificationId) async {
+    return await patch('/notifications/$notificationId/read');
+  }
+
+  static Future<dynamic> clearAllNotifications() async {
+    return await delete('/notifications/clear-all');
+  }
+
   // ── Payments ─────────────────────────────────────────────
   static Future<dynamic> getUpcomingPayments() async {
     return await get('/payments/upcoming');
+  }
+
+  // ── Dashboard ────────────────────────────────────────────
+  static Future<dynamic> getDashboardStats() async {
+    return await get('/dashboard/stats');
+  }
+
+  // ── Auth — Password Change ──────────────────────────────
+  static Future<dynamic> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    return await put('/auth/change-password', {
+      'currentPassword': currentPassword,
+      'newPassword': newPassword,
+    });
   }
 
   // ── Catalog ──────────────────────────────────────────────
@@ -150,4 +204,3 @@ class ApiService {
     return [];
   }
 }
-

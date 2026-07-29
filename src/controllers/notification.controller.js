@@ -46,6 +46,49 @@ const getNotifications = async (req, res, next) => {
   }
 };
 
+const markNotificationRead = async (req, res, next) => {
+  try {
+    const notification = await Notification.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!notification) {
+      return res.status(404).json({
+        success: false,
+        message: 'Notification not found',
+      });
+    }
+
+    notification.read = true;
+    await notification.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Notification marked as read',
+      data: notification,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const clearAllNotifications = async (req, res, next) => {
+  try {
+    const result = await Notification.deleteMany({ userId: req.user._id });
+
+    res.status(200).json({
+      success: true,
+      message: `${result.deletedCount} notification(s) cleared`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getNotifications,
+  markNotificationRead,
+  clearAllNotifications,
 };
+

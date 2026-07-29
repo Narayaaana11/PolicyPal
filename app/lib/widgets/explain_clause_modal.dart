@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../services/api_service.dart';
+import 'package:policypal/services/api_service.dart';
 import '../utils/app_theme.dart';
 import 'luxury_card.dart';
 

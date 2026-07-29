@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../providers/policy_provider.dart';
 import '../../services/api_service.dart';
 import '../../utils/app_theme.dart';
@@ -28,6 +30,14 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 365));
 
+  // PDF Upload state
+  bool _isUploadingPDF = false;
+  bool _pdfParsed = false;
+  String? _pdfFileName;
+  int? _pdfAccuracyScore;
+  String? _pdfPageInfo;
+  String? _pdfError;
+
   @override
   void dispose() {
     _providerController.dispose();
@@ -36,6 +46,94 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
     _coverageSummaryController.dispose();
     _nomineeController.dispose();
     super.dispose();
+  }
+
+  /// Pick a PDF file from the device and upload to backend for AI understanding
+  void _pickAndUploadPDF() async {
+    setState(() {
+      _pdfError = null;
+    });
+
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        allowMultiple: false,
+      );
+
+      if (result == null || result.files.isEmpty) return;
+
+      final file = result.files.first;
+      if (file.path == null) {
+        setState(() => _pdfError = 'Could not access the selected file.');
+        return;
+      }
+
+      setState(() {
+        _isUploadingPDF = true;
+        _pdfParsed = false;
+        _pdfFileName = file.name;
+        _pdfError = null;
+      });
+
+      // Upload to backend — AI will parse the PDF
+      final response = await ApiService.uploadPolicyPDF(File(file.path!));
+
+      if (response != null && response['success'] == true) {
+        final data = response['data'];
+        final policy = data['policy'];
+        final aiAnalysis = data['aiAnalysis'];
+        final parsedFields = aiAnalysis?['parsedFields'] ?? {};
+        final pdfInfo = aiAnalysis?['pdfInfo'] ?? {};
+
+        // Auto-fill form fields with AI-parsed data
+        setState(() {
+          _type = policy['type'] ?? parsedFields['type'] ?? 'other';
+          _providerController.text = policy['provider'] ?? parsedFields['provider'] ?? '';
+          _policyNumberController.text = policy['policyNumber'] ?? parsedFields['policyNumber'] ?? '';
+          _premiumAmountController.text = (policy['premiumAmount'] ?? parsedFields['premiumAmount'] ?? 0).toString();
+          _premiumCadence = policy['premiumCadence'] ?? parsedFields['premiumCadence'] ?? 'yearly';
+          _coverageSummaryController.text = policy['coverageSummary'] ?? parsedFields['coverageSummary'] ?? '';
+          _nomineeController.text = policy['nominee'] ?? parsedFields['nominee'] ?? '';
+
+          // Parse dates
+          final startStr = policy['startDate'] ?? parsedFields['startDate'];
+          final endStr = policy['endDate'] ?? parsedFields['endDate'];
+          if (startStr != null) {
+            _startDate = DateTime.tryParse(startStr.toString()) ?? DateTime.now();
+          }
+          if (endStr != null) {
+            _endDate = DateTime.tryParse(endStr.toString()) ?? DateTime.now().add(const Duration(days: 365));
+          }
+
+          _pdfAccuracyScore = aiAnalysis?['accuracyScore'] ?? 85;
+          _pdfPageInfo = '${pdfInfo['pageCount'] ?? '?'} pages • ${pdfInfo['fileSize'] ?? '?'}';
+          _isUploadingPDF = false;
+          _pdfParsed = true;
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('✅ AI parsed your PDF! Policy already saved to vault.'),
+              backgroundColor: AppTheme.successColor,
+            ),
+          );
+          // Policy was already created by the backend, so go back
+          context.pop();
+        }
+      } else {
+        setState(() {
+          _isUploadingPDF = false;
+          _pdfError = 'Failed to parse PDF. Try again or enter details manually.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isUploadingPDF = false;
+        _pdfError = e.toString().replaceAll('Exception: ', '');
+      });
+    }
   }
 
   void _submitPolicy() async {
@@ -90,15 +188,157 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Manual Policy Entry',
+                    'Add Policy',
                     style: Theme.of(context).textTheme.displayLarge?.copyWith(fontSize: 28),
                   ).animate().fadeIn(duration: 400.ms).slideY(begin: 0.2),
                   const SizedBox(height: 8),
                   Text(
-                    'Enter policy details below to add to your vault.',
+                    'Upload a PDF for AI auto-fill, or enter details manually.',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ).animate().fadeIn(delay: 200.ms),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+
+                  // ── PDF Upload Section ──────────────────────────────
+                  LuxuryCard(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        if (_isUploadingPDF) ...[
+                          const SizedBox(height: 8),
+                          const CircularProgressIndicator(color: AppTheme.primaryColor),
+                          const SizedBox(height: 16),
+                          Text(
+                            'AI is reading your policy PDF...',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.alabasterGrey,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _pdfFileName ?? 'Processing document',
+                            style: const TextStyle(fontSize: 12, color: AppTheme.dustyDenim),
+                          ),
+                          const SizedBox(height: 8),
+                        ] else ...[
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryColor.withOpacity(0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.picture_as_pdf, color: AppTheme.primaryColor, size: 28),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      '📄 Upload Policy PDF',
+                                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.alabasterGrey),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      'AI will read & understand your policy document automatically',
+                                      style: TextStyle(fontSize: 12, color: AppTheme.dustyDenim),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 48,
+                            child: ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primaryColor,
+                                foregroundColor: AppTheme.inkBlack,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                elevation: 0,
+                              ),
+                              onPressed: _pickAndUploadPDF,
+                              icon: const Icon(Icons.upload_file),
+                              label: const Text(
+                                'Choose Policy PDF',
+                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (_pdfError != null) ...[
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppTheme.dangerColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.error_outline, color: AppTheme.dangerColor, size: 18),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _pdfError!,
+                                    style: const TextStyle(fontSize: 12, color: AppTheme.dangerColor),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        if (_pdfParsed) ...[
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppTheme.successColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.check_circle, color: AppTheme.successColor, size: 18),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '✅ PDF Parsed — AI Confidence: ${_pdfAccuracyScore ?? 85}%',
+                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: AppTheme.successColor),
+                                      ),
+                                      if (_pdfPageInfo != null)
+                                        Text(
+                                          _pdfPageInfo!,
+                                          style: const TextStyle(fontSize: 11, color: AppTheme.dustyDenim),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.1),
+
+                  const SizedBox(height: 12),
+                  Center(
+                    child: Text(
+                      '─── or enter details manually ───',
+                      style: TextStyle(fontSize: 12, color: AppTheme.dustyDenim.withOpacity(0.6)),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // ── Policy Catalog Search ──────────────────────────
                   Autocomplete<Map<String, dynamic>>(
                     optionsBuilder: (TextEditingValue textEditingValue) async {
                       if (textEditingValue.text.isEmpty) {
@@ -169,7 +409,7 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
                         ),
                       );
                     },
-                  ).animate().fadeIn(delay: 250.ms).slideX(begin: 0.1),
+                  ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.1),
                   const SizedBox(height: 24),
 
                   LuxuryCard(
@@ -181,7 +421,7 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
                           value: _type,
                           items: ['health', 'auto', 'life', 'home', 'travel', 'other'],
                           onChanged: (val) => setState(() => _type = val!),
-                        ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.1),
+                        ).animate().fadeIn(delay: 350.ms).slideX(begin: 0.1),
                         const SizedBox(height: 20),
 
                         _buildTextField(
@@ -400,3 +640,4 @@ class _AddPolicyScreenState extends State<AddPolicyScreen> {
     );
   }
 }
+
