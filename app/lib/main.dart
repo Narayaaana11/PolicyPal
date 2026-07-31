@@ -141,7 +141,7 @@ class PolicyPalApp extends StatelessWidget {
                 builder: (context, state) => const NotificationsScreen(),
               ),
               GoRoute(
-                path: '/profile',
+                path: '/profile-detail',
                 parentNavigatorKey: _rootNavigatorKey,
                 builder: (context, state) => const ProfileScreen(),
               ),

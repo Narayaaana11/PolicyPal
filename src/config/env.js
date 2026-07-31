@@ -11,8 +11,8 @@ const config = {
   jwtAccessExpiration: '15m',
   jwtRefreshExpiration: '7d',
   openrouterApiKey: process.env.OPENROUTER_API_KEY || '',
-  // google/gemma-4-26b-a4b-it:free is verified working free model on OpenRouter
-  openrouterModel: process.env.OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free',
+  // google/gemini-2.0-flash-exp:free is a free vision-capable model on OpenRouter
+  openrouterModel: process.env.OPENROUTER_MODEL || 'google/gemini-2.0-flash-exp:free',
 };
 
 module.exports = config;

@@ -219,7 +219,7 @@ class ProfileScreen extends StatelessWidget {
                       },
                     ),
                   ).animate().fadeIn(delay: 800.ms).scale(),
-                  const SizedBox(height: 100),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
                 ],
               ),
             ),

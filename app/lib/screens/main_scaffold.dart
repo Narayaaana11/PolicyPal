@@ -123,7 +123,7 @@ class MainScaffold extends StatelessWidget {
                 color: AppTheme.warningColor,
                 onTap: () {
                   Navigator.pop(ctx);
-                  context.push('/ai-assistant');
+                  context.push('/claims-assistant');
                 },
               ),
               const SizedBox(height: 32),
@@ -216,7 +216,10 @@ class MainScaffold extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: isKeyboardOpen ? null : Padding(
-        padding: const EdgeInsets.only(bottom: 90, right: 12),
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 84,
+          right: 12,
+        ),
         child: FloatingActionButton.extended(
           backgroundColor: AppTheme.primaryColor,
           foregroundColor: AppTheme.inkBlack,

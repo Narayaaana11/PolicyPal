@@ -26,7 +26,20 @@ class _ComparisonScreenState extends State<ComparisonScreen> {
 
   Future<void> _fetchComparison() async {
     setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 500)); 
+    try {
+      final catalogData = await ApiService.fetchPolicyCatalog(_selectedType);
+      if (catalogData is List && catalogData.isNotEmpty) {
+        if (mounted) {
+          setState(() {
+            _marketPlans = catalogData;
+            _isLoading = false;
+          });
+          return;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching policy catalog: $e');
+    }
     
     List<dynamic> dummyPlans = [];
     if (_selectedType == 'auto') {

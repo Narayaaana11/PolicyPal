@@ -15,8 +15,9 @@ class GlassNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).padding.bottom;
     return Container(
-      margin: const EdgeInsets.only(left: 24, right: 24, bottom: 32),
+      margin: EdgeInsets.only(left: 24, right: 24, bottom: bottomInset + 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(40),
         boxShadow: [

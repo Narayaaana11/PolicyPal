@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -91,6 +91,24 @@ class ApiService {
   /// Main insurance AI chat assistant — calls /api/ai/chat
   static Future<dynamic> chatWithAI(String message) async {
     return await post('/ai/chat', {'message': message});
+  }
+
+  /// Real-Time AI Agent chat with Base64 Multimodal Vision support
+  static Future<dynamic> sendAgentChat({
+    required String message,
+    String? imageBase64,
+    List<dynamic>? conversationHistory,
+  }) async {
+    return await post('/agent/chat', {
+      'message': message,
+      if (imageBase64 != null) 'image': imageBase64,
+      if (conversationHistory != null) 'conversationHistory': conversationHistory,
+    });
+  }
+
+  /// Get Proactive AI Insights for Dashboard
+  static Future<dynamic> fetchProactiveInsights() async {
+    return await get('/agent/insights');
   }
 
   /// Translate an insurance clause into plain English

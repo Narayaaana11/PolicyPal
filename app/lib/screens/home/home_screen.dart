@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/policy_provider.dart';
+import '../../services/api_service.dart';
 import '../../utils/app_theme.dart';
 import '../../widgets/policy_card.dart';
 import '../../widgets/luxury_card.dart';
@@ -18,11 +19,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
+  List<dynamic> _proactiveInsights = [];
+  bool _isLoadingInsights = false;
 
   @override
   void initState() {
     super.initState();
+    _loadInsights();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final provider = Provider.of<PolicyProvider>(context, listen: false);
@@ -30,6 +33,24 @@ class _HomeScreenState extends State<HomeScreen> {
         provider.fetchUpcomingPayments();
       }
     });
+  }
+
+  Future<void> _loadInsights() async {
+    setState(() => _isLoadingInsights = true);
+    try {
+      final res = await ApiService.fetchProactiveInsights();
+      if (res != null && res['data'] != null) {
+        if (mounted) {
+          setState(() {
+            _proactiveInsights = res['data'] as List<dynamic>;
+            _isLoadingInsights = false;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error loading insights: $e');
+      if (mounted) setState(() => _isLoadingInsights = false);
+    }
   }
 
   @override
@@ -114,6 +135,59 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   const SizedBox(height: 24),
+                  // Proactive AI Agent Insight Card
+                  if (_proactiveInsights.isNotEmpty)
+                    LuxuryCard(
+                      padding: const EdgeInsets.all(18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.goldenOrange.withValues(alpha: 0.15),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.auto_awesome, color: AppTheme.goldenOrange, size: 20),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  _proactiveInsights[0]['title'] ?? 'AI Portfolio Insight',
+                                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.alabasterGrey),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            _proactiveInsights[0]['description'] ?? '',
+                            style: const TextStyle(fontSize: 12, color: AppTheme.dustyDenim, height: 1.4),
+                          ),
+                          const SizedBox(height: 12),
+                          InkWell(
+                            onTap: () {
+                              HapticFeedback.lightImpact();
+                              context.push('/claims-assistant');
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  _proactiveInsights[0]['buttonText'] ?? 'Ask PolicyAI Assistant',
+                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.primaryColor),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.arrow_forward, size: 14, color: AppTheme.primaryColor),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn(delay: 420.ms).slideY(begin: 0.1),
+
+                  const SizedBox(height: 24),
                   // Indian Specific Section 80D & ABHA Health Card
                   Builder(
                     builder: (context) {
@@ -131,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppTheme.successColor.withOpacity(0.15),
+                                color: AppTheme.successColor.withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.verified_outlined, color: AppTheme.successColor, size: 28),
@@ -151,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
-                                          color: AppTheme.primaryColor.withOpacity(0.2),
+                                          color: AppTheme.primaryColor.withValues(alpha: 0.2),
                                           borderRadius: BorderRadius.circular(4),
                                         ),
                                         child: const Text('AY 2026-27', style: TextStyle(fontSize: 10, color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
@@ -179,8 +253,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: Theme.of(context).textTheme.titleLarge,
                   ).animate().fadeIn(delay: 500.ms),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  GridView.count(
+                    crossAxisCount: 4,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
                     children: [
                       _buildQuickActionButton(
                         icon: Icons.add_circle_outline,
@@ -188,6 +266,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         onTap: () {
                           HapticFeedback.lightImpact();
                           context.push('/add-policy');
+                        },
+                      ),
+                      _buildQuickActionButton(
+                        icon: Icons.document_scanner_outlined,
+                        label: 'Scan Policy',
+                        onTap: () {
+                          HapticFeedback.lightImpact();
+                          context.push('/policies');
                         },
                       ),
                       _buildQuickActionButton(
@@ -265,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       TextButton(
-                        onPressed: () => context.push('/ai-assistant'),
+                        onPressed: () => context.push('/claims-assistant'),
                         child: const Text('New Claim', style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                     ],
@@ -322,7 +408,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ).toList(),
 
-                  const SizedBox(height: 100), // padding for floating nav bar
+                  SizedBox(height: MediaQuery.of(context).padding.bottom + 100), // safe area bottom padding
                 ],
               ),
             ),
